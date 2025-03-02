@@ -6,39 +6,24 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:12:17 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/03/01 15:16:32 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:50:49 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/so_long.h"
 
-int	check_for_invalid_newlines(char *filename)
+static void	process_line(char *line, int *width, int *height)
 {
-	int		fd;
-	char	*line;
-	int		i;
-	int		empty_line;
+	char	*newline;
 
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-		return (print_error("Error\nFailed to open map file"), 1);
-	empty_line = 0;
-	i = 0;
-	line = get_next_line(fd);
-	if (line && line[0] == '\n')
-		empty_line = 1;
-	while (line)
+	if (line[0] != '\n')
 	{
-		if (i > 0 && line[0] == '\n')
-			empty_line = 1;
-		else if (i > 0 && line[0] != '\0' && line[1] == '\n' 
-				&& ft_strlen(line) == 2)
-			empty_line = 1;
-		free(line);
-		line = get_next_line(fd);
-		i++;
+		newline = ft_strchr(line, '\n');
+		if (newline)
+			*newline = '\0';
+		*width = ft_strlen(line);
+		(*height)++;
 	}
-	return (close(fd), empty_line);
 }
 
 void	count_map_size(char *filename, t_game *game)
@@ -47,79 +32,74 @@ void	count_map_size(char *filename, t_game *game)
 	char	*line;
 	int		height;
 	int		width;
-	char	*newline;
 
-	if((fd = open(filename, O_RDONLY)) == -1)
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
 		return ;
 	height = 0;
 	width = 0;
-	while ((line = get_next_line(fd)))
+	line = get_next_line(fd);
+	while (line)
 	{
-		if (line[0] != '\n')
-		{
-			newline = ft_strchr(line, '\n');
-			if (newline)
-				*newline = '\0';
-			width = ft_strlen(line);
-			height++;
-		}
+		process_line(line, &width, &height);
 		free(line);
+		line = get_next_line(fd);
 	}
 	close(fd);
 	game->map_width = width;
 	game->map_height = height;
 }
 
-static int read_map_lines(int fd, t_game *game)
+static int	read_map_lines(int fd, t_game *game)
 {
-    char *line;
-    int i;
-    char *newline;
+	char	*line;
+	int		i;
+	char	*newline;
 
-    i = 0;
-    line = get_next_line(fd);
-    while (line && i < game->map_height)
-    {
-        if (line[0] != '\n')
-        {
-            newline = ft_strchr(line, '\n');
-            if (newline)
-                *newline = '\0';
-            game->map[i] = ft_strdup(line);
-            if (!game->map[i])
-                return (free(line), close(fd), 0);
-            i++;
-        }
-        free(line);
-        line = get_next_line(fd);
-    }
-    game->map[i] = NULL;
-    close(fd);
-    return (1);
+	i = 0;
+	line = get_next_line(fd);
+	while (line && i < game->map_height)
+	{
+		if (line[0] != '\n')
+		{
+			newline = ft_strchr(line, '\n');
+			if (newline)
+				*newline = '\0';
+			game->map[i] = ft_strdup(line);
+			if (!game->map[i])
+				return (free(line), close(fd), 0);
+			i++;
+		}
+		free(line);
+		line = get_next_line(fd);
+	}
+	game->map[i] = NULL;
+	close(fd);
+	return (1);
 }
 
-int parse_map(char *filename, t_game *game)
+int	parse_map(char *filename, t_game *game)
 {
-    int fd;
+	int	fd;
 
-    count_map_size(filename, game);
-    if (game->map_height == 0 || game->map_width == 0)
-    {
-        print_error("Error\nInvalid map size");
-        return (0);
-    }
-    game->map = malloc(sizeof(char *) * (game->map_height + 1));
-    if (!game->map)
-        return (0);
-    fd = open(filename, O_RDONLY);
-    if (fd == -1)
-        return (0);
-    if (!read_map_lines(fd, game))
-    {
-        print_error("Error\nFailed to read map data");
-        return (0);
-    }
-    return (1);
+	count_map_size(filename, game);
+	if (game->map_height == 0 || game->map_width == 0)
+	{
+		print_error("Error\nInvalid map size");
+		return (0);
+	}
+	game->map = malloc(sizeof(char *) * (game->map_height + 1));
+	if (!game->map)
+		return (0);
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return (0);
+	if (!read_map_lines(fd, game))
+	{
+		print_error("Error\nFailed to read map data");
+		return (0);
+	}
+	return (1);
 }
 
 int	validate_map(t_game *game)
@@ -132,8 +112,16 @@ int	validate_map(t_game *game)
 	if (!check_map_walls(game))
 		return (print_error("Error\nMap is not surrounded by walls"), 0);
 	if (!check_player_exit_collectible(game))
-		return (print_error("Error\nMap must have 1 player, 1 exit, and at least 1 collectible"), 0);
+	{
+		print_error ("Error\nMap must have 1 "
+			"player, 1 exit and at least 1 collectible");
+		return (0);
+	}
 	if (!check_valid_path(game))
-		return (print_error("Error\nNo valid path from player to exit or a collectible"), 0);
+	{
+		print_error ("Error\nNo valid path from"
+			" player to exit or a collectible");
+		return (0);
+	}
 	return (1);
 }

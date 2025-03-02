@@ -6,18 +6,21 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:07:54 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/03/01 15:23:32 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:50:36 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
-#define GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-#define BUFFER_SIZE 42
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
 # include <stdlib.h>
 # include <fcntl.h>
 # include <unistd.h>
+# include <limits.h>
 
 char		*get_next_line(int fd);
 char		*ft_strjoin(char *s1, char *s2);

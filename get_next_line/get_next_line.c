@@ -6,13 +6,13 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:07:33 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/03/01 15:23:13 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:25:27 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_line(char *save)
+static char	*get_line(char *save)
 {
 	int		i;
 	char	*line;
@@ -28,7 +28,7 @@ char	*get_line(char *save)
 	return (line);
 }
 
-char	*update_save(char *save)
+static char	*update_save(char *save)
 {
 	int		i;
 	char	*new_save;
@@ -48,7 +48,7 @@ char	*update_save(char *save)
 	return (new_save);
 }
 
-char	*read_file(int fd, char *save)
+static char	*read_file(int fd, char *save)
 {
 	char	*buffer;
 	int		read_bytes;
@@ -74,7 +74,7 @@ char	*read_file(int fd, char *save)
 			return (NULL);
 		}
 	}
-	return (free(buffer),save);
+	return (free(buffer), save);
 }
 
 char	*get_next_line(int fd)
@@ -82,10 +82,12 @@ char	*get_next_line(int fd)
 	static char	*save;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX || BUFFER_SIZE > INT_MAX)
 		return (NULL);
 	if (!save)
 		save = ft_strdup("");
+	if (!save)
+		return (NULL);
 	save = read_file(fd, save);
 	if (!save)
 		return (NULL);

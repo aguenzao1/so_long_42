@@ -6,7 +6,7 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:09:10 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/02/28 11:25:08 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:42:35 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
-	if(!s)
-		return(0);
+	if (!s)
+		return (0);
 	i = 0;
 	while (s[i])
 		i++;

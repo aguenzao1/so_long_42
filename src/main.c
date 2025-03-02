@@ -6,7 +6,7 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:05:52 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/03/01 15:12:43 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:40:27 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	render_map(t_game *game)
 		x = -1;
 		while (++x < game->map_width)
 		{
-			mlx_put_image_to_window(game->mlx, game->win, game->floor_img, 
+			mlx_put_image_to_window(game->mlx, game->win, game->floor_img,
 				x * TILE_SIZE, y * TILE_SIZE);
 			if (game->map[y][x] == '1')
 				mlx_put_image_to_window(game->mlx, game->win,
@@ -75,50 +75,29 @@ void	render_map(t_game *game)
 	}
 }
 
-int	key_hook(int keycode, t_game *game)
+int	main(int argc, char **argv)
 {
-	if (keycode == KEY_ESC)
-		close_game(game);
-	else if (keycode == KEY_W)
-		move_player(game, 0, -1);
-	else if (keycode == KEY_A)
-		move_player(game, -1, 0);
-	else if (keycode == KEY_S)
-		move_player(game, 0, 1);
-	else if (keycode == KEY_D)
-		move_player(game, 1, 0);
+	t_game	game;
+
+	if (argc != 2)
+	{
+		print_error("Error\nUsage: ./so_long map.ber");
+		return (1);
+	}
+	if (!check_extension(argv[1]))
+		return (print_error("Error\nMap file must have .ber extension"), 1);
+	if (access(argv[1], F_OK) == -1)
+		return (print_error("Error\nFailed to open map file"), 1);
+	if (check_for_invalid_newlines(argv[1]))
+		return (print_error("Error\nMap contains invalid newlines"), 1);
+	ft_memset(&game, 0, sizeof(game));
+	if (!parse_map(argv[1], &game) || !validate_map(&game))
+		return (free_game(&game), 1);
+	if (!init_game(&game) || !load_images(&game))
+		return (free_game(&game), 1);
+	render_map(&game);
+	mlx_key_hook(game.win, key_hook, &game);
+	mlx_hook(game.win, 17, 0, close_game, &game);
+	mlx_loop(game.mlx);
 	return (0);
-}
-
-void l()
-{
-	system("leaks so_long");
-}
-
-int    main(int argc, char **argv)
-{
-    t_game    game;
-
-	atexit(l);
-    if (argc != 2)
-    {
-        print_error("Error\nUsage: ./so_long map.ber");
-        return (1);
-    }
-    if (!check_extension(argv[1]))
-        return (print_error("Error\nMap file must have .ber extension"),1);
-    if (access(argv[1], F_OK) == -1)
-        return (print_error("Error\nFailed to open map file"), 1);
-    if (check_for_invalid_newlines(argv[1]))
-        return (print_error("Error\nMap contains invalid newlines"),1);
-    ft_memset(&game, 0, sizeof(game));
-    if (!parse_map(argv[1], &game) || !validate_map(&game))
-        return (free_game(&game),1);
-    if (!init_game(&game) || !load_images(&game))
-        return (free_game(&game), 1);
-    render_map(&game);
-    mlx_key_hook(game.win, key_hook, &game);
-    mlx_hook(game.win, 17, 0, close_game, &game);
-    mlx_loop(game.mlx);
-    return (0);
 }

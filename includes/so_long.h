@@ -6,14 +6,14 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:05:00 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/03/01 15:23:59 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:51:42 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
-# include "mlx.h"
+# include <mlx.h>
 # include <stdlib.h>
 # include <fcntl.h>
 # include <unistd.h>

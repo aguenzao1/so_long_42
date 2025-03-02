@@ -1,7 +1,13 @@
 NAME = so_long
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+
+CFLAGS = -Wall -Wextra -Werror -I./includes -I./get_next_line
+
+GNL_HEADER = get_next_line/get_next_line.h
+
+SO_HEADER = includes/so_long.h
+
 RM = rm -f
 
 SRC = src/main.c \
@@ -16,22 +22,18 @@ SRC = src/main.c \
 
 OBJ = $(SRC:.c=.o)
 
-MLX_FLAGS = -Lmlx -lmlx -framework OpenGL -framework AppKit
+MLX_FLAGS =  -lmlx -framework OpenGL -framework AppKit
 
-all: mlx $(NAME)
-
-mlx:
-	@make -C libmlx.a
+all: $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(MLX_FLAGS)
 
-%.o: %.c so_long.h
+%.o: %.c $(SO_HEADER) $(GNL_HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@$(RM) $(OBJ)
-	@make -C mlx clean
 
 fclean: clean
 	@$(RM) $(NAME)

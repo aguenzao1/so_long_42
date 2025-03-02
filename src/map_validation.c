@@ -6,50 +6,50 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:13:23 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/03/01 14:48:25 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/02 14:07:18 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/so_long.h"
 
-static void update_game_elements(t_game *game, int i, int j, char cell)
+static void	update_game_elements(t_game *game, int i, int j, char cell)
 {
-    if (cell == 'C')
-        game->collectibles++;
-    else if (cell == 'P')
-    {
-        game->player.x = j;
-        game->player.y = i;
-    }
-    else if (cell == 'E')
-    {
-        game->exit.x = j;
-        game->exit.y = i;
-    }
+	if (cell == 'C')
+		game->collectibles++;
+	else if (cell == 'P')
+	{
+		game->player.x = j;
+		game->player.y = i;
+	}
+	else if (cell == 'E')
+	{
+		game->exit.x = j;
+		game->exit.y = i;
+	}
 }
 
-int check_map_chars(t_game *game)
+int	check_map_chars(t_game *game)
 {
-    int i;
-    int j;
-    char cell;
+	int		i;
+	int		j;
+	char	cell;
 
-    i = 0;
-    while (i < game->map_height)
-    {
-        j = 0;
-        while (j < game->map_width)
-        {
-            cell = game->map[i][j];
-            if (cell != '0' && cell != '1' && cell != 'C' 
-                && cell != 'E' && cell != 'P')
-                return (0);
-            update_game_elements(game, i, j, cell);
-            j++;
-        }
-        i++;
-    }
-    return (1);
+	i = 0;
+	while (i < game->map_height)
+	{
+		j = 0;
+		while (j < game->map_width)
+		{
+			cell = game->map[i][j];
+			if (cell != '0' && cell != '1' && cell != 'C'
+				&& cell != 'E' && cell != 'P')
+				return (0);
+			update_game_elements(game, i, j, cell);
+			j++;
+		}
+		i++;
+	}
+	return (1);
 }
 
 int	check_map_walls(t_game *game)
