@@ -6,7 +6,7 @@
 /*   By: aguenzao <aguenzao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 10:07:54 by aguenzao          #+#    #+#             */
-/*   Updated: 2025/03/02 14:50:36 by aguenzao         ###   ########.fr       */
+/*   Updated: 2025/03/04 10:17:10 by aguenzao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # endif
 
 # include <stdlib.h>
-# include <fcntl.h>
 # include <unistd.h>
 # include <limits.h>
 
